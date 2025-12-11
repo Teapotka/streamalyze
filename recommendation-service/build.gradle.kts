@@ -13,12 +13,23 @@ java {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("org.springframework.cloud:spring-cloud-starter-gateway-server-webflux")
-    // Eureka Client
+
+    // Eureka client so we still see it in discovery (optional but nice)
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
+    // gRPC
+    implementation(project(":common-proto"))
+    implementation("io.grpc:grpc-netty-shaded:1.63.0")
+    implementation("io.grpc:grpc-stub:1.63.0")
+    implementation("io.grpc:grpc-protobuf:1.63.0")
+
+    // R2DBC – read tags from Postgres
+    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
+    runtimeOnly("org.postgresql:r2dbc-postgresql")
+
+    // logging
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
     implementation("net.logstash.logback:logstash-logback-encoder:7.4")
 

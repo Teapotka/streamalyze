@@ -1,5 +1,6 @@
 package com.streamalyze.ratingsservice.grpc
 
+import com.google.protobuf.Timestamp
 import com.streamalyze.ratings.v1.GetAverageRatingRequest
 import com.streamalyze.ratings.v1.GetAverageRatingResponse
 import com.streamalyze.ratings.v1.GetRatingsForMovieRequest
@@ -12,14 +13,13 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import reactor.core.scheduler.Schedulers
-import java.time.format.DateTimeFormatter
+import java.time.ZoneOffset
 
 @Service
 class RatingsGrpcService(
     private val ratingRepository: RatingRepository,
 ) : RatingsServiceGrpc.RatingsServiceImplBase() {
     private val log = LoggerFactory.getLogger(RatingsGrpcService::class.java)
-    private val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
     override fun getRatingsForMovie(
         request: GetRatingsForMovieRequest,
@@ -30,13 +30,20 @@ class RatingsGrpcService(
         ratingRepository
             .findByMovieId(request.movieId)
             .map { r ->
+                val ts =
+                    Timestamp
+                        .newBuilder()
+                        .setSeconds(r.ratedAt.toEpochSecond(ZoneOffset.UTC))
+                        .setNanos(r.ratedAt.nano)
+                        .build()
+
                 Rating
                     .newBuilder()
                     .setId(r.id ?: 0L)
                     .setUserId(r.userId)
                     .setMovieId(r.movieId)
                     .setRating(r.rating)
-                    .setRatedAt(r.ratedAt.format(formatter))
+                    .setRatedAt(ts)
                     .build()
             }.collectList()
             .map { ratings ->
@@ -74,7 +81,7 @@ class RatingsGrpcService(
                         .newBuilder()
                         .setMovieId(request.movieId)
                         .setAverageRating(avg)
-                        .setRatingsCount(count)
+                        .setRatingCount(count) 
                         .build()
                 }
 

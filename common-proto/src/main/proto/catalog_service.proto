@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package com.streamalyze.catalog.v1;
+
+option java_multiple_files = true;
+option java_package = "com.streamalyze.catalog.v1";
+option java_outer_classname = "CatalogServiceProto";
+
+service CatalogService {
+  rpc GetMovie(GetMovieRequest) returns (GetMovieResponse);
+}
+
+message GetMovieRequest {
+  int64 id = 1;
+}
+
+message Movie {
+  int64 id = 1;
+  string title = 2;
+  repeated string genres = 3;
+}
+
+message GetMovieResponse {
+  Movie movie = 1;
+}

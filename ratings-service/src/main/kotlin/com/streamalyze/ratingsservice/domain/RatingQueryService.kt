@@ -10,11 +10,11 @@ private val logger = KotlinLogging.logger {}
 class RatingQueryService(
     private val ratingRepository: RatingRepository,
 ) {
-
     fun getAverageForMovie(movieId: Long): Mono<RatingSummary> {
         logger.info { "Computing average rating for movieId=$movieId" }
 
-        return ratingRepository.findByMovieId(movieId)
+        return ratingRepository
+            .findByMovieId(movieId)
             .collectList()
             .map { list ->
                 if (list.isEmpty()) {

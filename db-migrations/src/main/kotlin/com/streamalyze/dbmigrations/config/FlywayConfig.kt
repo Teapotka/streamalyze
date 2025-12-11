@@ -24,8 +24,8 @@ class FlywayConfig(
         return Flyway
             .configure()
             .dataSource(url, username, password)
-            .baselineOnMigrate(true) // можно убрать, если БД всегда чистая
-            .locations("classpath:db/migration") // здесь лежат V1__...sql, V2__...sql и т.д.
+            .baselineOnMigrate(true) 
+            .locations("classpath:db/migration") 
             .load()
     }
 }

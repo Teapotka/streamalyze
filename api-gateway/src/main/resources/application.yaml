@@ -24,6 +24,12 @@ spring:
               uri: lb://ratings-service
               predicates:
                 - Path=/dev/ratings/** 
+                
+            - id: recommendation-service
+              uri: lb://recommendation-service
+              predicates:
+                - Path=/dev/recommendations/**
+
 
 eureka:
   client:

@@ -1,11 +1,11 @@
-package com.streamalyze.apigateway
+package com.streamalyze.recommendationservice
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class ApiGatewayApplication
+class RecommendationServiceApplication
 
 fun main(args: Array<String>) {
-    runApplication<ApiGatewayApplication>(*args)
+    runApplication<RecommendationServiceApplication>(*args)
 }

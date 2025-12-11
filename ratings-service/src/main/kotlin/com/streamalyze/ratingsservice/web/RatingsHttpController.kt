@@ -13,8 +13,8 @@ import reactor.core.publisher.Mono
 class RatingsHttpController(
     private val ratingQueryService: RatingQueryService,
 ) {
-
     @GetMapping("/movies/{movieId}/average")
-    fun getAverageForMovie(@PathVariable movieId: Long): Mono<RatingSummary> =
-        ratingQueryService.getAverageForMovie(movieId)
+    fun getAverageForMovie(
+        @PathVariable movieId: Long,
+    ): Mono<RatingSummary> = ratingQueryService.getAverageForMovie(movieId)
 }

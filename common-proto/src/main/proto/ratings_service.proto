@@ -2,29 +2,28 @@ syntax = "proto3";
 
 package com.streamalyze.ratings.v1;
 
-option java_package = "com.streamalyze.ratings.v1";
 option java_multiple_files = true;
+option java_package = "com.streamalyze.ratings.v1";
+option java_outer_classname = "RatingsServiceProto";
 
-// Запрос: хотим рейтинги по конкретному фильму
-message GetRatingsForMovieRequest {
-  int64 movie_id = 1;
-}
+import "google/protobuf/timestamp.proto";
 
-// Один рейтинг
 message Rating {
   int64 id = 1;
   int64 user_id = 2;
   int64 movie_id = 3;
   double rating = 4;
-  string rated_at = 5; // ISO строка, нам хватит
+  google.protobuf.Timestamp rated_at = 5;
 }
 
-// Ответ: список рейтингов
+message GetRatingsForMovieRequest {
+  int64 movie_id = 1;
+}
+
 message GetRatingsForMovieResponse {
   repeated Rating ratings = 1;
 }
 
-// Можно сразу добавить агрегацию — средний рейтинг
 message GetAverageRatingRequest {
   int64 movie_id = 1;
 }
@@ -32,7 +31,7 @@ message GetAverageRatingRequest {
 message GetAverageRatingResponse {
   int64 movie_id = 1;
   double average_rating = 2;
-  int64 ratings_count = 3;
+  int64 rating_count = 3;
 }
 
 service RatingsService {
