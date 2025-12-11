@@ -1,0 +1,54 @@
+############################
+# OS files
+############################
+.DS_Store
+Thumbs.db
+
+############################
+# IDEs / Editors
+############################
+.idea/
+*.iml
+out/
+.vscode/
+
+############################
+# Gradle
+############################
+.gradle/
+build/
+**/build/
+!gradle/wrapper/gradle-wrapper.jar
+bin/
+**/bin/
+**/.gradle/
+.kotlinc/
+**/.kotlinc/
+.kotlin/
+**/.kotlin/
+
+############################
+# Java / Kotlin
+############################
+*.class
+*.log
+logs/
+nohup.out
+
+############################
+# Docker / local runtime data
+############################
+docker-data/
+tmp/
+temp/
+.run/
+
+############################
+# Env / secrets
+############################
+.env
+.env.*
+*.local.yml
+*.local.yaml
+*.local.properties
+

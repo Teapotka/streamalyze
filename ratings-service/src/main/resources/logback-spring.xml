@@ -1,0 +1,20 @@
+<configuration>
+    <!-- read Spring properties -->
+    <springProperty scope="context" name="SERVICE_NAME"
+                    source="spring.application.name" defaultValue="catalog-service"/>
+    <springProperty scope="context" name="ENV"
+                    source="spring.profiles.active" defaultValue="local"/>
+
+    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <!-- static fields -->
+            <customFields>{"service":"${SERVICE_NAME}", "env":"${ENV}"}</customFields>
+            <!-- include MDC so traceId, userId, etc. appear automatically -->
+            <includeMdc>true</includeMdc>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="JSON"/>
+    </root>
+</configuration>

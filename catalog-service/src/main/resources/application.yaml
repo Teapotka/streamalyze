@@ -1,0 +1,25 @@
+server:
+    port: 8080
+
+spring:
+  application:
+    name: catalog-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/movielens
+    username: movielens
+    password: movielens
+
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5433/movielens
+    username: movielens
+    password: movielens
+
+  flyway:
+    enabled: false
+    locations: classpath:db/migration
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
