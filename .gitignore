@@ -53,3 +53,4 @@ temp/
 *.local.properties
 
 datasets/
+movielens-db-image/
