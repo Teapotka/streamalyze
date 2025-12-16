@@ -23,31 +23,6 @@ grpc:
   server:
     port: 9090 
 
-spring:
-  application:
-    name: ratings-service
-
-  datasource:
-    url: jdbc:postgresql://localhost:5433/movielens
-    username: movielens
-    password: movielens
-
-  r2dbc:
-    url: r2dbc:postgresql://localhost:5433/movielens
-    username: movielens
-    password: movielens
-
-  flyway:
-    enabled: false
-    locations: classpath:db/migration
-    
-server:
-  port: 8081  # ratings-service HTTP port
-
-grpc:
-  server:
-    port: 9090 
-
 eureka:
   client:
     enabled: false
