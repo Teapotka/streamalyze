@@ -1,5 +1,6 @@
 package com.streamalyze.catalogservice.search
 
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import org.elasticsearch.ElasticsearchStatusException
 import org.elasticsearch.action.index.IndexRequest
 import org.elasticsearch.action.search.SearchRequest
@@ -16,29 +17,28 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
-import org.mockito.kotlin.argThat
+import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import org.mockito.kotlin.argumentCaptor
 
 @ExtendWith(MockitoExtension::class)
 class MovieSearchServiceUnitTest {
-
     @Mock
     private lateinit var esClient: RestHighLevelClient
+
+    private val meterRegistry = SimpleMeterRegistry()
 
     private lateinit var service: MovieSearchService
 
     @BeforeEach
     fun setUp() {
-        service = MovieSearchService(esClient)
+        service = MovieSearchService(esClient, meterRegistry)
     }
 
     @Test
     fun `indexMovie sends IndexRequest with correct index id and body`() {
-
         val doc =
             MovieSearchDocument(
                 id = 5L,

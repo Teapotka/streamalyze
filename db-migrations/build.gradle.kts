@@ -19,8 +19,8 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter") 
-    implementation("org.springframework.boot:spring-boot-starter-jdbc") 
+    implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-jdbc")
 
     // Flyway + Postgres
     implementation("org.flywaydb:flyway-core")

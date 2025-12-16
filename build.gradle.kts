@@ -14,6 +14,8 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "14.0.1" apply false
 
     jacoco
+
+    id("org.sonarqube") version "5.1.0.4882"
 }
 
 allprojects {
@@ -22,6 +24,19 @@ allprojects {
 
     repositories {
         mavenCentral()
+    }
+}
+
+sonarqube {
+    properties {
+        property("sonar.projectKey", "Teapotka_streamalyze")
+        property("sonar.organization", "teapotka")
+        property("sonar.host.url", System.getenv("SONAR_HOST_URL"))
+        property("sonar.login", System.getenv("SONAR_LOGIN"))
+        property("sonar.junit.reportPaths", "build/test-results/test")
+        property("sonar.java.coveragePlugin", "jacoco")
+        property("sonar.jacoco.reportPaths", "build/jacoco/test.exec")
+        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml")
     }
 }
 
@@ -65,7 +80,7 @@ subprojects {
             violationRules {
                 rule {
                     limit {
-                        minimum = BigDecimal("0.01") // 80% minimum coverage
+                        minimum = BigDecimal("0.6") // 60% minimum coverage
                     }
                 }
             }

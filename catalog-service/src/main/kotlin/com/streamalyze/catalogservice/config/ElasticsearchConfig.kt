@@ -5,8 +5,10 @@ import org.elasticsearch.client.RestClient
 import org.elasticsearch.client.RestHighLevelClient
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 
 @Configuration
+@Profile("!docker")
 class ElasticsearchConfig {
     @Bean
     fun elasticsearchClient(): RestHighLevelClient {

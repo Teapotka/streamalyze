@@ -1,0 +1,18 @@
+# 1) Minimal JRE image for runtime
+FROM eclipse-temurin:21-jre-jammy
+
+# 2) Workdir inside container
+WORKDIR /app
+
+# 3) Copy the fat JAR built by Gradle
+ARG JAR_FILE=build/libs/*.jar
+COPY ${JAR_FILE} app.jar
+
+# 4) Optional JVM opts from env
+ENV JAVA_OPTS=""
+
+# 5) Only *internal* port; we won't publish it on host in compose
+EXPOSE 8080
+
+# 6) Start app
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]

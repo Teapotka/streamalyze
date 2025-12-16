@@ -51,3 +51,8 @@ dependencies {
     testImplementation("org.mockito:mockito-junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+    maxParallelForks = 1
+}

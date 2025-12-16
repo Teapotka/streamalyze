@@ -1,23 +1,21 @@
 package com.streamalyze.catalogservice.web
 
-import com.streamalyze.catalogservice.domain.MovieRepository
 import com.streamalyze.catalogservice.domain.Movie
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.argThat
-import org.mockito.kotlin.whenever
-import reactor.core.publisher.Mono
+import com.streamalyze.catalogservice.domain.MovieRepository
 import com.streamalyze.catalogservice.search.MovieSearchDocument
 import com.streamalyze.catalogservice.search.MovieSearchService
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.whenever
 import org.mockito.kotlin.argThat
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
 import org.springframework.test.context.bean.override.mockito.MockitoBean
-import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.EntityExchangeResult
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.springframework.test.web.reactive.server.WebTestClient
+import reactor.core.publisher.Mono
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -57,18 +55,18 @@ class MovieSearchControllerIT(
         // when + then
         val result: EntityExchangeResult<List<MovieSearchDocument>> =
             webTestClient
-            .get()
-            .uri { builder ->
-                builder
-                    .path("/dev/movies/search")
-                    .queryParam("query", query)
-                    .build()
-            }.exchange()
-            .expectStatus()
-            .isOk
-            .expectBodyList(MovieSearchDocument::class.java)
-            .hasSize(2)
-            .returnResult()
+                .get()
+                .uri { builder ->
+                    builder
+                        .path("/dev/movies/search")
+                        .queryParam("query", query)
+                        .build()
+                }.exchange()
+                .expectStatus()
+                .isOk
+                .expectBodyList(MovieSearchDocument::class.java)
+                .hasSize(2)
+                .returnResult()
 
         val body = result.responseBody!!
         assertEquals(5L, body[0].id)
@@ -84,7 +82,7 @@ class MovieSearchControllerIT(
                 id = movieId,
                 title = "Father of the Bride Part II",
                 genres = listOf("Comedy"),
-            ) 
+            )
 
         whenever(movieRepository.findById(movieId)).thenReturn(Mono.just(movie))
 
@@ -93,13 +91,14 @@ class MovieSearchControllerIT(
             .post()
             .uri("/dev/movies/search/{id}/index", movieId)
             .exchange()
-            .expectStatus().isOk
+            .expectStatus()
+            .isOk
 
         verify(movieSearchService).indexMovie(
             argThat<MovieSearchDocument> {
                 id == movieId &&
-                title == "Father of the Bride Part II" &&
-                genres == listOf("Comedy")
+                    title == "Father of the Bride Part II" &&
+                    genres == listOf("Comedy")
             },
         )
     }
@@ -114,8 +113,9 @@ class MovieSearchControllerIT(
         // when + then
         webTestClient
             .get()
-            .uri("/dev/movies/{id}", missingId) 
+            .uri("/dev/movies/{id}", missingId)
             .exchange()
-            .expectStatus().isNotFound
+            .expectStatus()
+            .isNotFound
     }
 }

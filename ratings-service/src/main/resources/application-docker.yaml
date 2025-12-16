@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: ratings-service
+
+  datasource:
+    url: jdbc:postgresql://postgres:5432/movielens
+    username: movielens
+    password: movielens
+
+  r2dbc:
+    url: r2dbc:postgresql://postgres:5432/movielens
+    username: movielens
+    password: movielens
+
+  flyway:
+    enabled: false
+    locations: classpath:db/migration
+    
+server:
+  port: 8081  # ratings-service HTTP port
+
+grpc:
+  server:
+    port: 9090 
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-service:8761/eureka/

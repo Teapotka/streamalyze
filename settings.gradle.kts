@@ -7,5 +7,6 @@ include(
     "catalog-service",
     "ratings-service", 
     "recommendation-service", 
-    "common-proto"
+    "common-proto",
+    "auth-service",
 )

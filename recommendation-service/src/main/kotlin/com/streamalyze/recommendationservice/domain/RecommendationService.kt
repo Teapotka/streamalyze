@@ -4,6 +4,8 @@ import com.streamalyze.catalog.v1.CatalogServiceGrpc
 import com.streamalyze.catalog.v1.GetMovieRequest
 import com.streamalyze.ratings.v1.GetAverageRatingRequest
 import com.streamalyze.ratings.v1.RatingsServiceGrpc
+import io.micrometer.core.instrument.MeterRegistry
+import io.micrometer.core.instrument.Timer
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
@@ -16,9 +18,19 @@ class RecommendationService(
     private val catalogStub: CatalogServiceGrpc.CatalogServiceBlockingStub,
     private val ratingsStub: RatingsServiceGrpc.RatingsServiceBlockingStub,
     private val tagRepository: TagRepository,
+    private val meterRegistry: MeterRegistry,
 ) {
+    private val recommendationTimer: Timer =
+        Timer
+            .builder("recommendation_latency_seconds")
+            .description("Time to compute movie recommendations")
+            .publishPercentiles(0.5, 0.9, 0.99)
+            .register(meterRegistry)
+
     fun getMovieWithRating(movieId: Long): Mono<MovieRecommendationDto> {
         logger.info { "Building recommendation view via gRPC for movieId=$movieId" }
+
+        val sample = Timer.start(meterRegistry)
 
         val movieMono =
             Mono
@@ -72,6 +84,9 @@ class RecommendationService(
                     ratingCount = rating.ratingCount,
                     tags = tags,
                 )
+            }.doFinally {
+                // stop timer on success, error or cancel
+                sample.stop(recommendationTimer)
             }
     }
 }

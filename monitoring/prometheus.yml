@@ -1,0 +1,52 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+scrape_configs:
+  # Catalog service on host: runs on localhost:8080
+  - job_name: 'catalog-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:8080']
+        labels:
+          application: 'catalog-service'
+
+  # Ratings service on host: e.g. 8081
+  - job_name: 'ratings-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:8081']
+        labels:
+          application: 'ratings-service'
+
+  # Recommendation service on host: e.g. 8082
+  - job_name: 'recommendation-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:8082']
+        labels:
+          application: 'recommendation-service'
+
+  # Gateway
+  - job_name: 'gateway'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:9000']    # whatever your gateway port is
+        labels:
+          application: 'api-gateway'
+
+  # Auth service
+  - job_name: 'auth-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:9100']    # adjust port
+        labels:
+          application: 'auth-service'
+          
+  # Discovery service
+  - job_name: 'discovery-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['discovery-service:8761']
+        labels:
+          application: 'discovery-service'

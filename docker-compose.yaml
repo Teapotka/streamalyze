@@ -12,6 +12,7 @@ services:
       - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./datasets:/data 
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
@@ -32,6 +33,111 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+
+  discovery-service:
+    build:
+      context: ./discovery-service
+      dockerfile: Dockerfile
+    container_name: movielens-discovery
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    ports:
+      - "8761:8761"   # optional; for UI
+    depends_on:
+      - postgres
+    
+  catalog-service:
+    build:
+      context: ./catalog-service
+      dockerfile: Dockerfile
+    container_name: movielens-catalog
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - postgres
+      - elasticsearch
+      - discovery-service
+    
+  ratings-service:
+    build:
+      context: ./ratings-service
+      dockerfile: Dockerfile
+    container_name: movielens-ratings
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - postgres
+      - discovery-service
+
+  recommendation-service:
+    build:
+      context: ./recommendation-service
+      dockerfile: Dockerfile
+    container_name: movielens-recommendation
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - catalog-service
+      - ratings-service
+      - discovery-service
+
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: movielens-auth
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - postgres
+      - discovery-service
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: movielens-gateway
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    ports:
+      - "8099:8099"  # client entry point
+    depends_on:
+      - discovery-service
+      - catalog-service
+      - ratings-service
+      - recommendation-service
+
+  prometheus:
+      image: prom/prometheus:v2.55.0
+      container_name: movielens-prometheus
+      command:
+        - "--config.file=/etc/prometheus/prometheus.yml"
+      volumes:
+        - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      ports:
+        - "9900:9090"
+      depends_on:
+        - postgres
+        - elasticsearch
+        - api-gateway
+        - catalog-service
+        - ratings-service
+        - recommendation-service
+
+
+  grafana:
+      image: grafana/grafana:11.0.0
+      container_name: movielens-grafana
+      ports:
+        - "3000:3000"
+      environment:
+        - GF_SECURITY_ADMIN_USER=admin
+        - GF_SECURITY_ADMIN_PASSWORD=admin
+      volumes:
+        - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      depends_on:
+        - prometheus
+
 
 volumes:
   pgdata:

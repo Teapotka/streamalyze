@@ -7,14 +7,13 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.whenever
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import reactor.core.publisher.Flux
 import reactor.test.StepVerifier
 
 @ExtendWith(MockitoExtension::class)
-class RatingQueryServiceTest {
-
+class RatingQueryServiceUnitTest {
     private val ratingRepository: RatingRepository = mock()
 
     private lateinit var service: RatingQueryService
@@ -40,13 +39,13 @@ class RatingQueryServiceTest {
 
         val result = service.getAverageForMovie(movieId)
 
-        StepVerifier.create(result)
+        StepVerifier
+            .create(result)
             .assertNext { summary ->
                 assertThat(summary.movieId).isEqualTo(movieId)
                 assertThat(summary.ratingCount).isEqualTo(2L)
-                assertThat(summary.averageRating).isEqualTo(4.0) // (3 + 5) / 2
-            }
-            .verifyComplete()
+                assertThat(summary.averageRating).isEqualTo(4.0)
+            }.verifyComplete()
 
         verify(ratingRepository).findByMovieId(movieId)
     }
@@ -61,13 +60,13 @@ class RatingQueryServiceTest {
 
         val result = service.getAverageForMovie(movieId)
 
-        StepVerifier.create(result)
+        StepVerifier
+            .create(result)
             .assertNext { summary ->
                 assertThat(summary.movieId).isEqualTo(movieId)
                 assertThat(summary.ratingCount).isEqualTo(0L)
                 assertThat(summary.averageRating).isEqualTo(0.0)
-            }
-            .verifyComplete()
+            }.verifyComplete()
 
         verify(ratingRepository).findByMovieId(movieId)
     }

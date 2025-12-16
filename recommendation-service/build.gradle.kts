@@ -14,7 +14,6 @@ java {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
 
-    // Eureka client so we still see it in discovery (optional but nice)
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -32,6 +31,9 @@ dependencies {
     // logging
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
     implementation("net.logstash.logback:logstash-logback-encoder:7.4")
+    // Actuator + Prometheus
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("io.micrometer:micrometer-registry-prometheus")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")

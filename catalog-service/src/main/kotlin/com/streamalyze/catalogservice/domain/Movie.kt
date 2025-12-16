@@ -9,7 +9,6 @@ data class Movie(
     @Id
     val id: Long,
     val title: String,
-    // text[] в Postgres → List<String> в Kotlin
     @Column("genres")
     val genres: List<String>,
 )

@@ -24,8 +24,8 @@ class FlywayConfig(
         return Flyway
             .configure()
             .dataSource(url, username, password)
-            .baselineOnMigrate(true) 
-            .locations("classpath:db/migration") 
+            .baselineOnMigrate(true)
+            .locations("classpath:db/migration")
             .load()
     }
 }

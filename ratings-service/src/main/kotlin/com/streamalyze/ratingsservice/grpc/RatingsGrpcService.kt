@@ -81,7 +81,7 @@ class RatingsGrpcService(
                         .newBuilder()
                         .setMovieId(request.movieId)
                         .setAverageRating(avg)
-                        .setRatingCount(count) 
+                        .setRatingCount(count)
                         .build()
                 }
 

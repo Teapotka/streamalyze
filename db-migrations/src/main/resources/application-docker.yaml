@@ -1,0 +1,13 @@
+spring:
+  main:
+    web-application-type: none
+
+  datasource:
+    url: jdbc:postgresql://postgres:5433/movielens
+    username: movielens
+    password: movielens
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: false

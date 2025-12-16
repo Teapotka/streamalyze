@@ -1,0 +1,42 @@
+server:
+    port: 8080
+
+spring:
+  application:
+    name: catalog-service
+
+  datasource:
+    url: jdbc:postgresql://postgres:5433/movielens
+    username: movielens
+    password: movielens
+
+  r2dbc:
+    url: r2dbc:postgresql://postgres:5433/movielens
+    username: movielens
+    password: movielens
+
+  flyway:
+    enabled: false
+    locations: classpath:db/migration
+
+eureka:
+  client:
+    enabled: false
+
+grpc:
+  server:
+    port: 9091
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: always
+
+  prometheus:
+    metrics:
+      export:
+        enabled: true

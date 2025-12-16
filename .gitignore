@@ -52,3 +52,4 @@ temp/
 *.local.yaml
 *.local.properties
 
+datasets/

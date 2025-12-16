@@ -1,0 +1,126 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test-sonar-docker:
+    runs-on: ubuntu-latest
+
+    env:
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true"
+      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      SONAR_LOGIN: ${{ secrets.SONAR_TOKEN }}
+
+    steps:
+      # 1) Checkout
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2) JDK
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+
+      # 3) gradlew executable
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      # 4) Start Postgres
+      - name: Start Postgres via docker-compose
+        run: |
+          docker compose -f docker-compose.yaml up -d postgres
+
+          echo "Waiting for Postgres to be ready..."
+          until docker exec movielens-postgres pg_isready -U movielens > /dev/null 2>&1; do
+            echo "Postgres not ready yet..."
+            sleep 2
+          done
+
+      # 5) Run DB migrations (db-migrations module)
+      - name: Run DB migrations
+        env:
+          SPRING_PROFILES_ACTIVE: ci
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5433/movielens
+          SPRING_DATASOURCE_USERNAME: movielens
+          SPRING_DATASOURCE_PASSWORD: movielens
+        run: |
+          ./gradlew :db-migrations:bootJar --no-daemon
+          ls db-migrations/build/libs
+          java -jar db-migrations/build/libs/db-migrations-*.jar
+
+      # 6) Lint: ktlint + detekt
+      - name: Run ktlint & detekt
+        env:
+          SPRING_PROFILES_ACTIVE: ci
+        run: ./gradlew ktlint detekt --stacktrace
+
+      # 7) Tests + JaCoCo
+      - name: Run tests with JaCoCo
+        env:
+          SPRING_PROFILES_ACTIVE: ci
+        run: ./gradlew test jacocoTestReport --stacktrace
+
+      # 8) SonarQube analysis
+      - name: SonarQube analysis
+        run: ./gradlew sonarqube --stacktrace
+        env:
+          SONAR_HOST_URL: ${{ env.SONAR_HOST_URL }}
+          SONAR_LOGIN: ${{ env.SONAR_LOGIN }}
+          SPRING_PROFILES_ACTIVE: ci
+
+      # 9) Compute image version (used for tags)
+      - name: Compute image version
+        id: version
+        run: |
+          SHORT_SHA=${GITHUB_SHA::7}
+
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            VERSION="${GITHUB_REF_NAME}"
+          elif [ "${GITHUB_REF_NAME}" = "main" ]; then
+            VERSION="main-${SHORT_SHA}"
+          else
+            SANITIZED_BRANCH=$(echo "${GITHUB_REF_NAME}" | tr '/' '-')
+            VERSION="${SANITIZED_BRANCH}-${SHORT_SHA}"
+          fi
+
+          echo "VERSION=${VERSION}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      # 10) Login to Docker Hub (once)
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 11) Build Docker images with version tag
+      - name: Build Docker images
+        run: |
+          TAG=${{ steps.version.outputs.version }}
+          echo "Using image tag: ${TAG}"
+
+          docker build -t movielens/discovery-service:${TAG} ./discovery-service
+          docker build -t movielens/catalog-service:${TAG} ./catalog-service
+          docker build -t movielens/ratings-service:${TAG} ./ratings-service
+          docker build -t movielens/recommendation-service:${TAG} ./recommendation-service
+          docker build -t movielens/api-gateway:${TAG} ./api-gateway
+          docker build -t movielens/auth-service:${TAG} ./auth-service
+
+      # 12) Push Docker images
+      - name: Push Docker images
+        run: |
+          TAG=${{ steps.version.outputs.version }}
+
+          docker push movielens/discovery-service:${TAG}
+          docker push movielens/catalog-service:${TAG}
+          docker push movielens/ratings-service:${TAG}
+          docker push movielens/recommendation-service:${TAG}
+          docker push movielens/api-gateway:${TAG}
+          docker push movielens/auth-service:${TAG}

@@ -37,6 +37,9 @@ dependencies {
     implementation("org.elasticsearch.client:elasticsearch-rest-high-level-client:7.10.2")
     // Eureka Client
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+    // Actuator + Prometheus
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("io.micrometer:micrometer-registry-prometheus")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-webtestclient")

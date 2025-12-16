@@ -29,9 +29,17 @@ spring:
               uri: lb://recommendation-service
               predicates:
                 - Path=/dev/recommendations/**
+            - id: auth-service
+              uri: lb://AUTH-SERVICE
+              predicates:
+                - Path=/dev/auth/**
 
 
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+
+security:
+  jwt:
+    secret: "99fb30f67cc30aecac63e9b0145802bc"

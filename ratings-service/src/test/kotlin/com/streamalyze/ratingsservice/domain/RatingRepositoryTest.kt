@@ -5,11 +5,20 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.TestPropertySource
 import reactor.test.StepVerifier
 
 private val logger = KotlinLogging.logger {}
 
 @SpringBootTest
+@TestPropertySource(
+    properties = [
+        // disable Eureka during tests so it doesn’t matter if 8761 is down
+        "eureka.client.enabled=false",
+        "eureka.client.register-with-eureka=false",
+        "eureka.client.fetch-registry=false",
+    ],
+)
 class RatingRepositoryTest
     @Autowired
     constructor(

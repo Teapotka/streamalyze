@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: ratings-service
+  main:
+    web-application-type: reactive
+  cloud:
+    discovery:
+      enabled: false
+
+eureka:
+  client:
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false
+
+ratings:
+  grpc:
+    enabled: false   # <– this is the key for @ConditionalOnProperty
+# optional, but if you use a port property:
+#  port: 0
