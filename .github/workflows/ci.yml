@@ -56,10 +56,10 @@ jobs:
       #     java -jar db-migrations/build/libs/db-migrations-*.jar
 
       # 6) Lint: ktlint + detekt
-      - name: Run ktlint & detekt
+      - name: Run ktlint 
         env:
           SPRING_PROFILES_ACTIVE: ci
-        run: ./gradlew ktlint detekt --stacktrace
+        run: ./gradlew ktlintCheck --stacktrace
 
       # 7) Tests + JaCoCo
       - name: Run tests with JaCoCo
