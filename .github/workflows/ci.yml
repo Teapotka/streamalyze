@@ -12,8 +12,8 @@ jobs:
 
     env:
       GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true"
-      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      SONAR_LOGIN: ${{ secrets.SONAR_TOKEN }}
+      # SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      # SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     steps:
       # 1) Checkout
@@ -66,14 +66,6 @@ jobs:
         env:
           SPRING_PROFILES_ACTIVE: ci
         run: ./gradlew test jacocoTestReport --stacktrace
-
-      # 8) SonarQube analysis
-      - name: SonarQube analysis
-        run: ./gradlew sonarqube --stacktrace
-        env:
-          SONAR_HOST_URL: ${{ env.SONAR_HOST_URL }}
-          SONAR_LOGIN: ${{ env.SONAR_LOGIN }}
-          SPRING_PROFILES_ACTIVE: ci
 
       # 9) Compute image version (used for tags)
       - name: Compute image version
