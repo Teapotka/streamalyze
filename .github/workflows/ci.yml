@@ -98,21 +98,21 @@ jobs:
           TAG=${{ steps.version.outputs.version }}
           echo "Using image tag: ${TAG}"
 
-          docker build -t movielens/discovery-service:${TAG} ./discovery-service
-          docker build -t movielens/catalog-service:${TAG} ./catalog-service
-          docker build -t movielens/ratings-service:${TAG} ./ratings-service
-          docker build -t movielens/recommendation-service:${TAG} ./recommendation-service
-          docker build -t movielens/api-gateway:${TAG} ./api-gateway
-          docker build -t movielens/auth-service:${TAG} ./auth-service
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/discovery-service:${TAG} ./discovery-service
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/catalog-service:${TAG} ./catalog-service
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/ratings-service:${TAG} ./ratings-service
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/recommendation-service:${TAG} ./recommendation-service
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/api-gateway:${TAG} ./api-gateway
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/auth-service:${TAG} ./auth-service
 
       # 12) Push Docker images
       - name: Push Docker images
         run: |
           TAG=${{ steps.version.outputs.version }}
 
-          docker push movielens/discovery-service:${TAG}
-          docker push movielens/catalog-service:${TAG}
-          docker push movielens/ratings-service:${TAG}
-          docker push movielens/recommendation-service:${TAG}
-          docker push movielens/api-gateway:${TAG}
-          docker push movielens/auth-service:${TAG}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/discovery-service:${TAG}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/catalog-service:${TAG}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/ratings-service:${TAG}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/recommendation-service:${TAG}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/api-gateway:${TAG}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/auth-service:${TAG}
