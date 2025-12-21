@@ -1,0 +1,16 @@
+global:
+  imageTag: "master-2fa8db1"
+
+services:
+  discovery:
+    tag: "master-2fa8db1"
+  catalog:
+    tag: "master-2fa8db1"
+  ratings:
+    tag: "master-2fa8db1"
+  recommendation:
+    tag: "master-2fa8db1"
+  auth:
+    tag: "master-2fa8db1"
+  apiGateway:
+    tag: "master-2fa8db1"

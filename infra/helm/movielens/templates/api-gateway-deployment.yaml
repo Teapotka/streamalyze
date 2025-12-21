@@ -1,0 +1,30 @@
+{{- if .Values.services.apiGateway.enabled }}
+{{- $svc := .Values.services.apiGateway }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $svc.name }}
+  namespace: {{ $.Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ $svc.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ $svc.name }}
+    spec:
+      containers:
+        - name: {{ $svc.name }}
+          image: "{{ $svc.image }}:{{ default $.Values.global.imageTag $svc.tag }}"
+          ports:
+            - containerPort: {{ $svc.port }}
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "docker"
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: "http://discovery-service:8761/eureka/"
+            - name: SECURITY_JWT_SECRET
+              value: "99fb30f67cc30aecac63e9b0145802bc"
+{{- end }}

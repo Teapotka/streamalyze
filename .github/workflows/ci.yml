@@ -67,6 +67,19 @@ jobs:
           SPRING_PROFILES_ACTIVE: ci
         run: ./gradlew test jacocoTestReport --stacktrace
 
+      # 8) Build boot JARs
+      - name: Build boot JARs
+        env:
+          SPRING_PROFILES_ACTIVE: ci
+        run: |
+          ./gradlew \
+            :discovery-service:bootJar \
+            :catalog-service:bootJar \
+            :ratings-service:bootJar \
+            :recommendation-service:bootJar \
+            :api-gateway:bootJar \
+            :auth-service:bootJar
+
       # 9) Compute image version (used for tags)
       - name: Compute image version
         id: version

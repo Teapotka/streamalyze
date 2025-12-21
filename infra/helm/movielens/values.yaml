@@ -1,0 +1,61 @@
+global:
+  imageRegistry: "docker.io"
+  imageTag: "master-latest" 
+
+namespace: "movielens"
+
+postgres:
+  enabled: true
+  image: "teapotkadocker/movielens-postgres-20m:v1"
+  port: 5432
+  db:
+    name: "movielens"
+    user: "movielens"
+    password: "movielens"
+  resources: {}
+
+elasticsearch:
+  enabled: true
+  image: "docker.elastic.co/elasticsearch/elasticsearch:7.10.2"
+  portHttp: 9200
+  portTransport: 9300
+  resources: {}
+
+services:
+  discovery:
+    enabled: true
+    name: discovery-service
+    image: "teapotkadocker/discovery-service"
+    tag: "master-2fa8db1"       
+    port: 8761
+  catalog:
+    enabled: true
+    name: catalog-service
+    image: "teapotkadocker/catalog-service"
+    tag: "master-2fa8db1"
+    port: 8080
+  ratings:
+    enabled: true
+    name: ratings-service
+    image: "teapotkadocker/ratings-service"
+    tag: "master-2fa8db1"
+    port: 8081
+  recommendation:
+    enabled: true
+    name: recommendation-service
+    image: "teapotkadocker/recommendation-service"
+    tag: "master-2fa8db1"
+    port: 8082
+  auth:
+    enabled: true
+    name: auth-service
+    image: "teapotkadocker/auth-service"
+    tag: "master-2fa8db1"
+    port: 8083
+  apiGateway:
+    enabled: true
+    name: api-gateway
+    image: "teapotkadocker/api-gateway"
+    tag: "master-2fa8db1"
+    port: 8099
+    serviceType: LoadBalancer   # NodePort / LoadBalancer depending on your cluster

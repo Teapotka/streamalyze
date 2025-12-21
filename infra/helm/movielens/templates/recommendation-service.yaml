@@ -1,0 +1,4 @@
+{{- if .Values.services.recommendation.enabled }}
+{{- $svc := .Values.services.recommendation }}
+{{- include "movielens.serviceService" (merge (dict "svc" $svc) .) }}
+{{- end }}

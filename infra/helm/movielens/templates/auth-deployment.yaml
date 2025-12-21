@@ -1,0 +1,4 @@
+{{- if .Values.services.auth.enabled }}
+{{- $svc := .Values.services.auth }}
+{{- include "movielens.serviceDeployment" (merge (dict "svc" $svc) .) }}
+{{- end }}

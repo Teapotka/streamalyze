@@ -1,0 +1,36 @@
+{{- define "movielens.serviceDeployment" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .svc.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .svc.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .svc.name }}
+    spec:
+      containers:
+        - name: {{ .svc.name }}
+          image: "{{ .svc.image }}:{{ default .Values.global.imageTag .svc.tag }}"
+          ports:
+            - containerPort: {{ .svc.port }}
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "docker"
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://postgres:5432/movielens"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "movielens"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "movielens"
+            - name: SPRING_ELASTICSEARCH_REST_URIS
+              value: "http://elasticsearch:9200"
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: "http://discovery-service:8761/eureka/"
+            # per-service overrides appended elsewhere
+{{- end -}}

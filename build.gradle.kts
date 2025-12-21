@@ -4,6 +4,8 @@ import java.math.BigDecimal
 import org.gradle.testing.jacoco.tasks.JacocoCoverageVerification
 import org.gradle.testing.jacoco.tasks.JacocoReport
 import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
+import org.gradle.jvm.tasks.Jar
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
 	kotlin("jvm") version "2.2.21" apply false
@@ -42,6 +44,16 @@ subprojects {
         testLogging {
             events("PASSED", "FAILED", "SKIPPED")
             showStandardStreams = true
+        }
+    }
+
+     plugins.withId("org.springframework.boot") {
+        tasks.named<Jar>("jar") {
+            enabled = false    // don’t generate non-boot jar
+        }
+
+        tasks.named<BootJar>("bootJar") {
+            archiveFileName.set("${project.name}.jar")
         }
     }
 

@@ -1,0 +1,14 @@
+{{- define "movielens.serviceService" -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .svc.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: {{ .svc.name }}
+  ports:
+    - name: http
+      port: {{ .svc.port }}
+      targetPort: {{ .svc.port }}
+{{- end -}}
