@@ -19,6 +19,12 @@ spec:
           image: "{{ .svc.image }}:{{ default .Values.global.imageTag .svc.tag }}"
           ports:
             - containerPort: {{ .svc.port }}
+{{- if eq .svc.name "catalog-service" }}
+            - containerPort: 9091
+{{- end }}
+{{- if eq .svc.name "ratings-service" }}
+            - containerPort: 9090
+{{- end }}
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: "docker"
@@ -32,5 +38,15 @@ spec:
               value: "http://elasticsearch:9200"
             - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
               value: "http://discovery-service:8761/eureka/"
+            - name: EUREKA_INSTANCE_HOSTNAME
+              value: "{{ .svc.name }}"
             # per-service overrides appended elsewhere
+{{- if eq .svc.name "catalog-service" }}
+            - name: GRPC_SERVER_PORT
+              value: "9091"
+{{- end }}
+{{- if eq .svc.name "ratings-service" }}
+            - name: GRPC_SERVER_PORT
+              value: "9090"
+{{- end }}
 {{- end -}}

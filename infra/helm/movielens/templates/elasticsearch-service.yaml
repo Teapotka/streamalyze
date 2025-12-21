@@ -1,0 +1,15 @@
+{{- if .Values.elasticsearch.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch               # ВАЖНО: это имя = DNS-имя
+  namespace: {{ .Values.namespace }}
+spec:
+  type: ClusterIP
+  selector:
+    app: movielens-elasticsearch    # Совпадает с labels из Deployment
+  ports:
+    - name: http
+      port: {{ .Values.elasticsearch.portHttp }}       # 9200
+      targetPort: {{ .Values.elasticsearch.portHttp }}
+{{- end }}

@@ -31,7 +31,7 @@ resource "kubernetes_namespace" "movielens" {
 
 # Optional: override image tags, etc.
 locals {
-  movielens_values = yamldecode(file("${path.module}/values-overrides.yaml"))
+  movielens_values = yamldecode(file("${path.module}/values-override.yaml"))
 }
 
 resource "helm_release" "movielens" {
@@ -42,6 +42,6 @@ resource "helm_release" "movielens" {
 
   # base values.yaml from chart is loaded automatically; we pass overrides:
   values = [
-    file("${path.module}/values-overrides.yaml")
+    file("${path.module}/values-override.yaml")
   ]
 }

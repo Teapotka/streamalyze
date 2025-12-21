@@ -11,4 +11,10 @@ spec:
     - name: http
       port: {{ .svc.port }}
       targetPort: {{ .svc.port }}
+  {{- if .svc.grpcPort }}
+    - name: grpc
+      port: {{ .svc.grpcPort }}
+      targetPort: {{ .svc.grpcPort }}
+      protocol: TCP
+  {{- end }}
 {{- end -}}

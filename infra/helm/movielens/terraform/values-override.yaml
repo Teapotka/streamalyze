@@ -1,16 +1,16 @@
 global:
-  imageTag: "master-2fa8db1"
+  imageTag: "master-a447bb9"
 
 services:
   discovery:
-    tag: "master-2fa8db1"
+    tag: "master-a447bb9"
   catalog:
-    tag: "master-2fa8db1"
+    tag: "master-a447bb9"
   ratings:
-    tag: "master-2fa8db1"
+    tag: "master-a447bb9"
   recommendation:
-    tag: "master-2fa8db1"
+    tag: "master-a447bb9"
   auth:
-    tag: "master-2fa8db1"
+    tag: "master-a447bb9"
   apiGateway:
-    tag: "master-2fa8db1"
+    tag: "master-a447bb9"

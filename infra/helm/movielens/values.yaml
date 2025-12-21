@@ -26,36 +26,38 @@ services:
     enabled: true
     name: discovery-service
     image: "teapotkadocker/discovery-service"
-    tag: "master-2fa8db1"       
+    tag: "master-a447bb9"       
     port: 8761
   catalog:
     enabled: true
     name: catalog-service
     image: "teapotkadocker/catalog-service"
-    tag: "master-2fa8db1"
+    tag: "master-a447bb9"
     port: 8080
+    grpcPort: 9091
   ratings:
     enabled: true
     name: ratings-service
     image: "teapotkadocker/ratings-service"
-    tag: "master-2fa8db1"
+    tag: "master-a447bb9"
     port: 8081
+    grpcPort: 9090
   recommendation:
     enabled: true
     name: recommendation-service
     image: "teapotkadocker/recommendation-service"
-    tag: "master-2fa8db1"
+    tag: "master-a447bb9"
     port: 8082
   auth:
     enabled: true
     name: auth-service
     image: "teapotkadocker/auth-service"
-    tag: "master-2fa8db1"
-    port: 8083
+    tag: "master-a447bb9"
+    port: 8008
   apiGateway:
     enabled: true
     name: api-gateway
     image: "teapotkadocker/api-gateway"
-    tag: "master-2fa8db1"
+    tag: "master-a447bb9"
     port: 8099
     serviceType: LoadBalancer   # NodePort / LoadBalancer depending on your cluster
